@@ -117,6 +117,13 @@ def main():
     model = build_detector(
         cfg.model, train_cfg=cfg.train_cfg, test_cfg=cfg.test_cfg)
 
+
+    dummy_input = torch.randn(1, 1024, 2048, 3, device="cuda")
+    torch.onnx.export(model, dummy_input, "prueba.onnx")
+
+
+
+
     datasets = [build_dataset(cfg.data.train)]
     if len(cfg.workflow) == 2:
         val_dataset = copy.deepcopy(cfg.data.val)

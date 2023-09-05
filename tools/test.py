@@ -120,6 +120,7 @@ def main():
     # build the dataloader
     # TODO: support multiple images per gpu (only minor changes are needed)
     dataset = build_dataset(cfg.data.test)
+
     data_loader = build_dataloader(
         dataset,
         imgs_per_gpu=cfg.data.imgs_per_gpu,
@@ -129,6 +130,7 @@ def main():
 
     # build the model and load checkpoint
     model = build_detector(cfg.model, train_cfg=None, test_cfg=cfg.test_cfg)
+
     fp16_cfg = cfg.get('fp16', None)
     if fp16_cfg is not None:
         wrap_fp16_model(model)
@@ -144,14 +146,71 @@ def main():
 
     if not distributed:
         model = MMDataParallel(model, device_ids=[0])
-        outputs = single_gpu_test(model, data_loader, args.show, args.eval if args.eval[0] == 'panoptic' else None)
+        #outputs = single_gpu_test(model, data_loader, args.show, args.eval if args.eval[0] == 'panoptic' else None)
     else:
         model = MMDistributedDataParallel(
             model.cuda(),
             device_ids=[torch.cuda.current_device()],
             broadcast_buffers=False)
-        outputs = multi_gpu_test(model, data_loader, args.tmpdir,
-                                 args.gpu_collect, args.eval if args.eval[0] == 'panoptic' else None)
+        #outputs = multi_gpu_test(model, data_loader, args.tmpdir, args.gpu_collect, args.eval if args.eval[0] == 'panoptic' else None)
+
+
+
+    #VISUALIZAR MODELO
+    #FUNCIONA PERO NO DA MUCHA INFO
+    #print(model)
+
+    model.eval()
+
+    img_metas = dataset[0].get('img_metas')
+    #print(img_metas)
+
+    #NO FUNCIONA
+    #from torchsummary import summary
+    #summary(model(img=(1, 1024, 2048, 3), img_metas = img_metas))
+
+
+
+    dummy_input = torch.randn(1, 1024, 2048, 3, device="cuda")
+    #dummy_input2 = torch.zeros(1, 1024, 2048)
+
+    for i, data in enumerate(data_loader):
+        with torch.no_grad():
+            result = model(return_loss=False, rescale=True, eval=True, **data)
+
+            print(data)
+
+            print("\n")
+
+            print(result)
+
+
+            torch.onnx.export(model.module(return_loss=False, rescale=True, eval=True, **data), dummy_input, "prueba.onnx")
+
+            return -1
+
+
+    exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     rank, _ = get_dist_info()
     if rank == 0:
