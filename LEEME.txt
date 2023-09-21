@@ -1,0 +1,15 @@
+El comando para crear el contenedor que me permite trabajar con este repositorio es:
+nvidia-docker run --rm -it --ipc=host -v /media/jon/DATUAK/Jon/phd/Pytorch-AI-tutorials/openmm/:/workspace \
+    -v /media/jon/DATUAK/Jon/phd_data/Cityscapes:/workspace/EfficientPS/data/cityscapes nvcr.io/nvidia/pytorch:21.02-py3-jon-efficientPS
+
+Esta imagen la he creado modificando la imagen original nvcr.io/nvidia/pytorch:21.02-py3
+La modificación ha consistido en actualizar el entorno base con el comando conda env update --file environment.yml previa modificación de este fichero como se puede ver en los commits realizados.
+
+Este entorno de esta imagen tiene los siguientes paquetes asociados a openmm en las siguientes versiones/estado:
+mmcv                      0.5.9                    pypi_0    pypi
+mmdet                     1.1.0+43227ae             dev_0    <develop>
+
+El repositorio ha sido descargado de https://github.com/DeepSceneSeg/EfficientPS
+
+Ejemplo de ejecución de test:
+python tools/test.py configs/efficientPS_singlegpu_sample.py efficientPS_cityscapes/model/model.pth --eval panoptic
