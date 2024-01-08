@@ -13,3 +13,12 @@ El repositorio ha sido descargado de https://github.com/DeepSceneSeg/EfficientPS
 
 Ejemplo de ejecución de test:
 python tools/test.py configs/efficientPS_singlegpu_sample.py efficientPS_cityscapes/model/model.pth --eval panoptic
+
+Ejemplo de ejecución de train:
+python tools/train.py configs/efficientPS_singlegpu_sample.py
+
+El problema viene cuando trato de adaptar el modelo para nuestra base de datos. Se requiere de ciertas etiquetas adicionales para el entrenamiento
+que nuestra base de datos no dispone y habría que crear manualmente. Por eso dejé este repositorio en este estado.
+
+Tampoco pude visualizar la arquitectura del modelo exportándolo a ONNX (rama onnx) aunque este camino creo que es poco abordable por el momento porque
+en el repositorio InternImage al final tuve que acabar aprendiendo cómo funciona el framework openmm.
