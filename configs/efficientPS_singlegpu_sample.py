@@ -4,7 +4,7 @@ model = dict(
     pretrained=True,
     backbone=dict(
         type='tf_efficientnet_b5',
-        act_cfg = dict(type="Identity"),  
+        act_cfg = dict(type="Identity"),
         norm_cfg=dict(type='InPlaceABN', activation='leaky_relu', activation_param=0.01, requires_grad=True),
         style='pytorch'),
     neck=dict(
@@ -131,7 +131,7 @@ test_cfg = dict(
         min_stuff_area=2048))
 # dataset settings
 dataset_type = 'CityscapesDataset'
-data_root = 'data/cityscapes/'
+data_root = '/workspace/EfficientPS/data/cityscapes/EfficientPS/'
 img_norm_cfg = dict(
     mean=[106.433, 116.617, 119.559], std=[65.496, 67.6, 74.123], to_rgb=True)
 train_pipeline = [
@@ -162,8 +162,8 @@ test_pipeline = [
 ]
 
 data = dict(
-    imgs_per_gpu=2,
-    workers_per_gpu=2,
+    imgs_per_gpu=1,
+    workers_per_gpu=1,
     train=dict(
         type=dataset_type,
         ann_file=data_root + 'annotations/train.json',
@@ -208,7 +208,7 @@ log_config = dict(
 total_epochs = 160
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = None
+work_dir = './work_dirs/efficientPS_singlegpu_sample'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
